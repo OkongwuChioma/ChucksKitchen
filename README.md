@@ -27,14 +27,15 @@ Chuks Kitchen API is a C# ASP.NET Core Web API project that demonstrates backend
 Install via NuGet:
 
 bash
-dotnet add package Microsoft.EntityFrameworkCore.InMemory
+
 dotnet add package Swashbuckle.AspNetCore
+
 Endpoints
 **AUTHENTICATION**
 
-POST /api/auth/login → User login
-
 POST /api/auth/register → Register new user
+
+POST /api/auth/verify → verify otp
 
 **MENU**
 
