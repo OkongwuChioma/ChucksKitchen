@@ -61,9 +61,9 @@ cd ChucksKitchen
 dotnet build
 dotnet run
 
-Base URL: http://localhost:5000/api/
+Base URL: http://localhost:5214
 
-Swagger UI: http://localhost:5000/swagger
+Swagger UI: http://localhost:5214/swagger
 
 Testing
 bash
