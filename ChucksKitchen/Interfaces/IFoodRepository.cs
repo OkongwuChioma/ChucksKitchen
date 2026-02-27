@@ -8,5 +8,6 @@ namespace ChucksKitchen.Interfaces
         Task<FoodItem?> GetFoodByIdAsync(int id);
         Task<FoodItem> CreateFoodAsync(FoodItem food);
         Task<bool> UpdateFoodAsync(FoodItem food);
+        Task<bool> DeleteFoodAsync(int id);
     }
 }

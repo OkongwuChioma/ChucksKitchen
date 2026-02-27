@@ -47,6 +47,11 @@ namespace ChucksKitchen.Services
                 Price = f.Price
             });
         }
+        public async Task<bool> DeleteFoodAsync(int id)
+        {
+            await _foodRepository.DeleteFoodAsync(id);
+            return true;
+        }
 
     }
 }

@@ -7,5 +7,6 @@ namespace ChucksKitchen.Interfaces
     {
         Task<IEnumerable<FooditemResponseDto>> GetAvailableFoodsAsync();
         Task<FooditemResponseDto> AddFoodAsync(CreateFoodRequestDto request);
+        Task<bool> DeleteFoodAsync(int id);
     }
 }

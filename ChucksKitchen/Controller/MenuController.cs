@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ChucksKitchen.Dtos.Request;
 using ChucksKitchen.Dtos.Response;
 using ChucksKitchen.Interfaces;
-using ChucksKitchen.Dtos.Request;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ChucksKitchen.Controller
 {
@@ -19,15 +19,22 @@ namespace ChucksKitchen.Controller
             return Ok(ApiResponseDto<IEnumerable<FooditemResponseDto>>.SuccessMessage(foods));
         }
         [HttpPost("Item")]
-        [ProducesResponseType(typeof(ApiResponseDto<FooditemResponseDto>),StatusCodes.Status201Created)]
-        public async Task<IActionResult> AddFood([FromBody]CreateFoodRequestDto request)
+        [ProducesResponseType(typeof(ApiResponseDto<FooditemResponseDto>), StatusCodes.Status201Created)]
+        public async Task<IActionResult> AddFood([FromBody] CreateFoodRequestDto request)
         {
             var result = await _foodservice.AddFoodAsync(request);
             return CreatedAtAction(nameof(GetAvailbleFood),
-                ApiResponseDto<object>.SuccessMessage(request,"Food Item added"));
+                ApiResponseDto<object>.SuccessMessage(request, "Food Item added"));
         }
-       
-       
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ApiResponseDto<object>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteAsync([FromRoute] int id)
+        {
+            var result = await _foodservice.DeleteFoodAsync(id);
+            return Ok(ApiResponseDto<object>.SuccessMessage("item Deleted Successfully"));
+        }
+
+
     }
 }
 
