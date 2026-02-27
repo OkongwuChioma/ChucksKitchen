@@ -8,5 +8,6 @@ namespace ChucksKitchen.Interfaces
         Task<SignUpResponse> RegisterUserAsync(SignUpRequest request);
         Task<bool> VerifyOtpAsync(VerifyOtpRequestDto request);
         Task<bool> IsDuplicateUserAsync(string email, string phone);
+        Task<IEnumerable<UserResponseDto>> GetAllUserAsync();
     }
 }

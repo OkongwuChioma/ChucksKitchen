@@ -7,7 +7,7 @@ namespace ChucksKitchen.Controller
 {
     [Route("api/Auth")]
     [ApiController]
-    public class AuthController(IAuthService authService,ILogger<AuthController> logger) : ControllerBase
+    public class AuthController(IAuthService authService, ILogger<AuthController> logger) : ControllerBase
     {
         private readonly IAuthService _authService = authService;
         private readonly ILogger<AuthController> _logger = logger;
@@ -16,7 +16,7 @@ namespace ChucksKitchen.Controller
         [ProducesResponseType(typeof(ApiResponseDto<SignUpResponse>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponseDto<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponseDto<object>), StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> SignUp([FromBody]SignUpRequest request)
+        public async Task<IActionResult> SignUp([FromBody] SignUpRequest request)
         {
             try
             {
@@ -31,22 +31,29 @@ namespace ChucksKitchen.Controller
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning(ex,"duplicate user attempt");
+                _logger.LogWarning(ex, "duplicate user attempt");
                 return BadRequest(ApiResponseDto<object>.ErrorMessage(ex.Message));
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex,"Unexpected error occured");
+                _logger.LogWarning(ex, "Unexpected error occured");
                 return BadRequest(ApiResponseDto<object>.ErrorMessage("Unexpected error occured"));
 
             }
         }
         [HttpPost("verify")]
-        public async Task<IActionResult>   VerifyOtp([FromBody]VerifyOtpRequestDto request)
+        public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpRequestDto request)
         {
-            var otp=await _authService.VerifyOtpAsync(request);
+            var otp = await _authService.VerifyOtpAsync(request);
             return otp ? Ok(ApiResponseDto<object>.SuccessMessage(null, "account verified"))
                 : BadRequest(ApiResponseDto<object>.ErrorMessage("invalid or expired otp"));
+        }
+        [HttpGet]
+        [ProducesResponseType(typeof(ApiResponseDto<IEnumerable<UserResponseDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await _authService.GetAllUserAsync();
+            return Ok(ApiResponseDto<IEnumerable<UserResponseDto>>.SuccessMessage(users));
         }
 
 

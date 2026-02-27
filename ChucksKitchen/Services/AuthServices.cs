@@ -8,6 +8,19 @@ namespace ChucksKitchen.Services
     public class AuthServices(IAppUser appUser) : IAuthService
     {
         private readonly IAppUser _appUser = appUser;
+
+        public async Task<IEnumerable<UserResponseDto>> GetAllUserAsync()
+        {
+            var users = await _appUser.GetUsers();
+            return users.Select(u => new UserResponseDto
+            {
+                Id = u.Id,
+                Email = u.Email,
+                PhoneNumber = u.PhoneNumber
+            });
+
+        }
+
         public async Task<bool> IsDuplicateUserAsync(string email, string phone)
         {
             var user = await _appUser.GetUserByEmailOrPhoneAsync(email, phone);
@@ -23,8 +36,8 @@ namespace ChucksKitchen.Services
             var user = new AppUser
             {
                 Email = request.Email ?? string.Empty,
-                PhoneNumber = request.PhoneNumber??string.Empty,
-                ReferralCode=request.ReferralCode
+                PhoneNumber = request.PhoneNumber ?? string.Empty,
+                ReferralCode = request.ReferralCode
             };
             var createdUser = await _appUser.CreateUserAsync(user);
             return new SignUpResponse
@@ -38,7 +51,7 @@ namespace ChucksKitchen.Services
 
         public Task<bool> VerifyOtpAsync(VerifyOtpRequestDto request)
         {
-            var user=_appUser.VerifyUserOtpAsync(request.UserId, request.Otp);
+            var user = _appUser.VerifyUserOtpAsync(request.UserId, request.Otp);
             return Task.FromResult(true);
         }
     }

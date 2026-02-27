@@ -28,7 +28,7 @@ namespace ChucksKitchen.Controller
         }
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiResponseDto<object>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteAsync([FromRoute] int id)
+        public async Task<IActionResult> DeleteUser([FromRoute] int id)
         {
             var result = await _foodservice.DeleteFoodAsync(id);
             return Ok(ApiResponseDto<object>.SuccessMessage("item Deleted Successfully"));

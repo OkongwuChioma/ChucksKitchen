@@ -41,10 +41,10 @@ namespace ChucksKitchen.Repositories
             return Task.FromResult(existingUser);
         }
 
-        public Task<List<AppUser>> GetUsers()
+        public Task<IEnumerable<AppUser>> GetUsers()
         {
             var user = GetDataFile<AppUser>(DbTableNames.Users);
-            return Task.FromResult(user.ToList());
+            return Task.FromResult(user.AsEnumerable());
         }
 
         public Task<bool> UpdateUserAsync(AppUser user)

@@ -10,22 +10,33 @@ namespace ChucksKitchen.Repositories
         private readonly DataStorage _dataStorage;
         public OrderRepo(DataStorage dataStorage) : base(dataStorage)
         {
-
+            _dataStorage = dataStorage;
         }
         public Task<Order> CreateOrderAsync(Order order)
         {
             var orderFile = GetDataFile<Order>(DbTableNames.Orders);
             var existing = orderFile.FirstOrDefault(o => o.Id == order.Id);
-            if (existing != null) return Task.FromResult(existing);
+            if (existing != null)
+            {
+                return Task.FromResult(order);
+            }
             order.CreatedAt = DateTime.Now;
+            order.Id = orderFile.Count + 1;
             orderFile.Add(order);
+            _dataStorage.DbFile[DbTableNames.Orders] = orderFile;
             return Task.FromResult(order);
         }
 
-        public Task<Order?> GetOrderByIdAsync(int id)
+        public async Task<Order?> GetOrderByIdAsync(int id)
         {
             var orderFile = GetDataFile<Order>(DbTableNames.Orders);
-            return Task.FromResult(orderFile.FirstOrDefault(o => o.Id == id));
+            Order? order = null;
+            await Task.Run(() => { order = orderFile.FirstOrDefault(f => f.Id == id); });
+            return order;
+            //var orderFile = GetDataFile<Order>(DbTableNames.Orders);
+            //var order = orderFile.FirstOrDefault(o => o.Id == id);
+            //if (order != null) return Task.FromResult(order);
+            //return Task.FromResult(order);
         }
 
         public Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId)
