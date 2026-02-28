@@ -15,7 +15,7 @@ namespace ChucksKitchen.Services
         {
             var order = await _orderRepo.GetOrderByIdAsync(orderId) ?? throw new ArgumentException($"Order with Id: {orderId} doesnt Exist");
             if (order.UserId != userId) throw new ArgumentException($"Order doesnt belong to the user");
-            if (order.Status != "Pending") return false;
+            if (order.Status != "Pending") return true;
             return await _orderRepo.UpdateOrderStatusAsync(orderId, "order cancelled");
         }
 
@@ -65,16 +65,43 @@ namespace ChucksKitchen.Services
             return MapToResponseDto(order);
         }
 
+        public async Task<OrderResponseDto?> GetOrderByIdAsync(int id)
+        {
+
+            var order = await _orderRepo.GetOrderByIdAsync(id);
+            if (order == null) throw new Exception("order doesnt exist yet");
+            var item = new List<OrderItem>();
+            return new OrderResponseDto
+            {
+                OrderId = order.Id,
+                UserId = order.UserId,
+                Items = order.Items.Select(o => new OrderItem
+                {
+
+                    FoodName = o.FoodName,
+                    PriceAtOrder = o.PriceAtOrder,
+                    Amount = o.Amount,
+                    Quantity = o.Quantity,
+                    SubTotal = o.SubTotal
+                }).ToList(),
+                DeliveryAddress = order.DeliveryAddress,
+                OrderedAt = order.CreatedAt,
+                TotalAmount = order.TotalAmount,
+            };
+        }
+
         public async Task<OrderStatusResponseDto> GetOrderStatusAsync(int id)
         {
-            var order = await _orderRepo.GetOrderByIdAsync(id) ?? throw new ArgumentException("orderId doesnt exist");
+            var order = await _orderRepo.GetOrderByIdAsync(id);
+            if (order == null)
+                throw new ArgumentException("orderId doesnt exist");
             var orderStatus = new OrderStatusResponseDto
             {
                 OrderId = order.Id,
                 StatusHistory = new List<StatusHistoryDto>
-               {
+                {
                    new() {Status=order.Status,Note=order.Note,Timestamp=order.UpdatedAt}
-               },
+                },
                 CurrentStatus = order.Status,
                 LastUpdated = order.UpdatedAt
             };
@@ -93,13 +120,13 @@ namespace ChucksKitchen.Services
             {
                 OrderId = order.Id,
                 UserId = order.UserId,
-                Items = order.Items.Select(item => new OrderItemResponseDto
+                Items = order.Items.Select(item => new OrderItem
                 {
                     FoodId = item.FoodId,
                     FoodName = "Food#" + item.FoodId,
                     Quantity = item.Quantity,
-                    Subtotal = item.SubTotal,
-                    UnitPrice = item.PriceAtOrder
+                    SubTotal = item.SubTotal,
+                    PriceAtOrder = item.PriceAtOrder
                 }).ToList(),
                 Status = order.Status,
                 DeliveryAddress = order.DeliveryAddress,

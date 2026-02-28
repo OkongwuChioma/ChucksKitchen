@@ -29,14 +29,11 @@ namespace ChucksKitchen.Repositories
 
         public async Task<Order?> GetOrderByIdAsync(int id)
         {
+
             var orderFile = GetDataFile<Order>(DbTableNames.Orders);
-            Order? order = null;
-            await Task.Run(() => { order = orderFile.FirstOrDefault(f => f.Id == id); });
-            return order;
-            //var orderFile = GetDataFile<Order>(DbTableNames.Orders);
-            //var order = orderFile.FirstOrDefault(o => o.Id == id);
-            //if (order != null) return Task.FromResult(order);
-            //return Task.FromResult(order);
+            var order = orderFile.FirstOrDefault(o => o.Id == id);
+            if (order == null) return await Task.FromResult(order);
+            return await Task.FromResult(order);
         }
 
         public Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId)

@@ -12,14 +12,14 @@ namespace ChucksKitchen.Controller
     {
         private readonly IOrderService _orderService = orderService;
         private readonly ILogger _logger = logger;
-        [HttpGet("{Id}")]
-        [ProducesResponseType(typeof(ApiResponseDto<OrderStatusResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetOrderStatus([FromRoute] int id)
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ApiResponseDto<OrderResponseDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetOrderbyId([FromRoute] int id)
         {
             try
             {
-                var status = await _orderService.GetOrderStatusAsync(id);
-                return Ok(ApiResponseDto<OrderStatusResponseDto>.SuccessMessage(status));
+                var orderId = await _orderService.GetOrderByIdAsync(id);
+                return Ok(ApiResponseDto<OrderResponseDto>.SuccessMessage(orderId));
             }
             catch (KeyNotFoundException ex)
             {
@@ -34,7 +34,7 @@ namespace ChucksKitchen.Controller
             try
             {
                 var order = await _orderService.CreateOrderAsync(request);
-                return CreatedAtAction(nameof(GetOrderStatus), new { id = order.OrderId },
+                return CreatedAtAction(nameof(GetOrderbyId), new { id = order.OrderId },
                     ApiResponseDto<OrderResponseDto>.SuccessMessage(order, "Order Created sucessfully"));
             }
             catch (KeyNotFoundException ex)
@@ -59,9 +59,6 @@ namespace ChucksKitchen.Controller
             return success
                 ? Ok(ApiResponseDto<object>.SuccessMessage(null, "Order Cancelled"))
                 : BadRequest(ApiResponseDto<object>.ErrorMessage("cannot cancel order"));
-
-
-
         }
     }
 }

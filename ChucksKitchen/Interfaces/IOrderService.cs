@@ -7,7 +7,8 @@ namespace ChucksKitchen.Interfaces
     {
         Task<OrderResponseDto> CreateOrderAsync(CreateOrderRequest request);
         Task<OrderStatusResponseDto?> GetOrderStatusAsync(int id);
+        Task<OrderResponseDto?> GetOrderByIdAsync(int id);
         Task<bool> CancelOrderAsync(int userId, int orderId);
-        Task<bool> UpdateOrderStatusAsync(int orderId, string status);
+        //Task<bool> UpdateOrderStatusAsync(int orderId, string status);
     }
 }
